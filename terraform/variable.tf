@@ -64,7 +64,5 @@ variable "ecr_image_url" {
 }
 
 
-variable "database_url" {}
-variable "jwt_secret" {}
 
 
