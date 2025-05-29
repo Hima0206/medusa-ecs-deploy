@@ -98,25 +98,7 @@ resource "aws_ecs_task_definition" "medusa_task" {
     memory    = tonumber(var.ecs_task_memory)
     essential = true
 
-    environment = [
-      {
-        name  = "NODE_ENV"
-        value = "production"
-      },
-      {
-        name  = "PORT"
-        value = tostring(var.containerPort)
-      },
-      {
-        name  = "DATABASE_URL"
-        value = var.database_url
-      },
-      {
-        name  = "JWT_SECRET"
-        value = var.jwt_secret
-      }
-      // Add other Medusa env vars if needed
-    ]
+  
 
     portMappings = [{
       containerPort = tonumber(var.containerPort)
