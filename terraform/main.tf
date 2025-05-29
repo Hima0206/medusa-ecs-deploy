@@ -98,7 +98,7 @@ resource "aws_ecs_task_definition" "medusa_task" {
     memory    = tonumber(var.ecs_task_memory)
     essential = true
 
-  
+
 
     portMappings = [{
       containerPort = tonumber(var.containerPort)
