@@ -66,7 +66,5 @@ variable "ecr_image_url" {
 
 variable "database_url" {}
 variable "jwt_secret" {}
-variable "aws_region" {
-  default = "us-east-1" // or your region
-}
+
 
