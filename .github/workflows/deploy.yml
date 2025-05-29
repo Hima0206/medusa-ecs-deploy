@@ -53,9 +53,19 @@ jobs:
       working-directory: ./terraform
 
     - name: Terraform plan
-      run: terraform plan
+      run: terraform plan -out=tfplan
       working-directory: ./terraform
-
+    
+    - name: Show Terraform plan
+      run: terraform show -json tfplan | jq '.'
+      working-directory: ./terraform  
+    
+    - name: Set Terraform variables 
+      run: |
+        echo "TF_VAR_ecr_repository=${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}" >> $GITHUB_ENV
+        echo "TF_VAR_image_tag=${{ env.IMAGE_TAG }}" >> $GITHUB_ENV
+      working-directory: ./terraform  
+    
     - name: Terraform Apply
       run: terraform apply -auto-approve
       working-directory: ./terraform
