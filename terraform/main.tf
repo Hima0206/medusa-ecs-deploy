@@ -79,8 +79,13 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_policy" {
 }
 
 resource "aws_cloudwatch_log_group" "medusa_logs" {
-  name              = "/ecs/medusa"
+  name = "/ecs/medusa"
   retention_in_days = 7
+
+  lifecycle {
+    create_before_destroy = true
+    ignore_changes = [name]
+  }
 }
 
 resource "aws_ecs_task_definition" "medusa_task" {
