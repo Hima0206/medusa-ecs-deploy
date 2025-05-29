@@ -78,6 +78,11 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_policy" {
 
 }
 
+resource "aws_cloudwatch_log_group" "medusa_logs" {
+  name              = "/ecs/medusa"
+  retention_in_days = 7
+}
+
 resource "aws_ecs_task_definition" "medusa_task" {
   family                   = "medusa-task"
   requires_compatibilities = ["FARGATE"]
@@ -93,13 +98,41 @@ resource "aws_ecs_task_definition" "medusa_task" {
     memory    = tonumber(var.ecs_task_memory)
     essential = true
 
+    environment = [
+      {
+        name  = "NODE_ENV"
+        value = "production"
+      },
+      {
+        name  = "PORT"
+        value = tostring(var.containerPort)
+      },
+      {
+        name  = "DATABASE_URL"
+        value = var.database_url
+      },
+      {
+        name  = "JWT_SECRET"
+        value = var.jwt_secret
+      }
+      // Add other Medusa env vars if needed
+    ]
+
     portMappings = [{
       containerPort = tonumber(var.containerPort)
-      hostPort      = var.containerPort
+      hostPort      = tonumber(var.containerPort)
       protocol      = "tcp"
     }]
-  }])
 
+    logConfiguration = {
+      logDriver = "awslogs"
+      options = {
+        awslogs-group         = aws_cloudwatch_log_group.medusa_logs.name
+        awslogs-region        = var.aws_region
+        awslogs-stream-prefix = "ecs"
+      }
+    }
+  }])
 }
 
 resource "aws_ecs_service" "medusa_service" {
