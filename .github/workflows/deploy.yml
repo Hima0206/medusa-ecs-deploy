@@ -61,7 +61,7 @@ jobs:
       working-directory: ./terraform
 
     - name: Terraform plan
-      run: terraform plan -no-color -input=false continue-on-error=true 
+      run: terraform plan -no-color -input=false
       working-directory: ./terraform
     
     - name: Show Terraform plan
