@@ -15,6 +15,21 @@ resource "aws_internet_gateway" "medusa_igw" {
   vpc_id = aws_vpc.medusa_vpc.id
 }
 
+resource "aws_route_table" "public_rt" {
+  vpc_id = aws_vpc.medusa_vpc.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.medusa_igw.id
+  }
+}
+
+resource "aws_route_table_association" "public_rt_assoc" {
+  count          = length(var.public_subnet_cidrs)
+  subnet_id      = aws_subnet.public_subnets[count.index].id
+  route_table_id = aws_route_table.public_rt.id
+}
+
 resource "aws_security_group" "medusa_sg" {
   name        = "medusa-sg"
   description = "Security group for Medusa ECS service"
@@ -39,7 +54,7 @@ resource "aws_ecs_cluster" "medusa_cluster" {
   name = var.ecs_cluster_name
 }
 
-resource "aws_iam_role" "ecs_task_role" {
+resource "aws_iam_role" "ecs_task_execution_role" {
   name = "ecsTaskExecutionRole"
 
   assume_role_policy = jsonencode({
@@ -58,7 +73,7 @@ resource "aws_iam_role" "ecs_task_role" {
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_task_execution_policy" {
-  role       = aws_iam_role.ecs_task_role.name
+  role       = aws_iam_role.ecs_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
   
 }
@@ -69,7 +84,7 @@ resource "aws_ecs_task_definition" "medusa_task" {
   network_mode             = "awsvpc"
   cpu                      = var.ecs_task_cpu
   memory                   = var.ecs_task_memory
-  execution_role_arn       = aws_iam_role.ecs_task_role.arn
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
 
   container_definitions = jsonencode([{
     name      = var.container_name
