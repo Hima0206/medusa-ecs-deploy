@@ -22,6 +22,13 @@ jobs:
     - name: Check medusa-config.js presence
       run: ls -al && cat medusa-config.js || echo "medusa-config.js not found!"
 
+    - name: Verify medusa-config.js presence
+      run: |
+       if [ ! -f medusa-config.js ]; then
+       echo "Error: medusa-config.js is missing in the repository."
+       exit 1
+       fi
+
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v3
       with:
