@@ -19,6 +19,9 @@ jobs:
     - name: Checkout source code
       uses: actions/checkout@v3
 
+    - name: Check medusa-config.js presence
+      run: ls -al && cat medusa-config.js || echo "medusa-config.js not found!"
+
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v3
       with:
