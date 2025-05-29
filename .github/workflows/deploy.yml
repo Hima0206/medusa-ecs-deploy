@@ -46,12 +46,14 @@ jobs:
     - name: Install Terraform
       run: |
         sudo apt-get update -y
-        sudo apt-get install -y software-properties-common
-        sudo apt-add-repository --yes --update ppa:terraform-repo/terraform
-        sudo apt-get install -y terraform
-
+        sudo apt-get install -y wget unzip
+        wget https://releases.hashicorp.com/terraform/1.5.0/terraform_1.5.0_linux_amd64.zip
+        unzip terraform_1.5.0_linux_amd64.zip
+        sudo mv terraform /usr/local/bin/
+ 
     - name: Terraform Init & Apply
       run: |
         cd terraform
         terraform init
         terraform apply -auto-approve -var="ecr_image_uri=${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}"
+        
