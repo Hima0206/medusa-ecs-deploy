@@ -3,7 +3,13 @@ FROM node:18
 WORKDIR /app
 
 COPY . .
-COPY path/to/medusa-config.js /app/
+
+COPY medusa-config.js /app/
+
+if [ ! -f medusa-config.js ]; then
+  echo "Error: medusa-config.js is missing in the repository."
+  exit 1
+fi
 
 # Debug command to verify file presence
 RUN ls -al /app
