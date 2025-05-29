@@ -3,8 +3,9 @@ FROM node:18
 WORKDIR /app
 
 COPY . .
+COPY path/to/medusa-config.js /app/
 
-# Add a debug command to verify file presence during build
+# Debug command to verify file presence
 RUN ls -al /app
 
 RUN npm install -g medusa-cli
