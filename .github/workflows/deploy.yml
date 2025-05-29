@@ -64,25 +64,6 @@ jobs:
       run: terraform plan -no-color -input=false -out=tfplan
       working-directory: ./terraform
 
-    - name: Debug Terraform plan output
-      run: terraform show -json ./terraform/tfplan > tfplan.json 
-      working-directory: ./terraform
-
-    - name: Check tfplan file existence
-      run: ls -l ./terraform/tfplan
-      working-directory: ./terraform
-   
-    - name: Show Terraform plan
-      run: |
-        terraform show -json tfplan > tfplan.json
-        jq '.' tfplan.json
-      working-directory: ./terraform
-    
-    - name: Set Terraform variables 
-      run: |
-        echo "TF_VAR_ecr_repository=${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}" >> $GITHUB_ENV
-        echo "TF_VAR_image_tag=${{ env.IMAGE_TAG }}" >> $GITHUB_ENV
-      working-directory: ./terraform  
     
     - name: Terraform Apply
       run: terraform apply -auto-approve
