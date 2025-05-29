@@ -63,10 +63,20 @@ jobs:
     - name: Terraform plan
       run: terraform plan -no-color -input=false
       working-directory: ./terraform
-    
+
+    - name: Debug Terraform plan output
+      run: terraform show -json tfplan
+      working-directory: ./terraform
+
+    - name: Check tfplan file existence
+      run: ls -l ./terraform/tfplan
+      working-directory: ./terraform
+   
     - name: Show Terraform plan
-      run: terraform show -json tfplan | jq '.'
-      working-directory: ./terraform  
+      run: |
+        terraform show -json tfplan > tfplan.json
+        jq '.' tfplan.json
+      working-directory: ./terraform
     
     - name: Set Terraform variables 
       run: |
