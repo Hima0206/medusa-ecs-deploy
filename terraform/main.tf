@@ -5,9 +5,9 @@ resource "aws_vpc" "medusa_vpc" {
 resource "aws_subnet" "public_subnets" {
   count = length(var.public_subnet_cidrs)
 
-  vpc_id            = aws_vpc.medusa_vpc.id
-  cidr_block        = var.public_subnet_cidrs[count.index]
-  availability_zone = var.availability_zones[count.index]
+  vpc_id                  = aws_vpc.medusa_vpc.id
+  cidr_block              = var.public_subnet_cidrs[count.index]
+  availability_zone       = var.availability_zones[count.index]
   map_public_ip_on_launch = true
 }
 
@@ -69,13 +69,13 @@ resource "aws_iam_role" "ecs_task_execution_role" {
       }
     ]
   })
-  
+
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_task_execution_policy" {
   role       = aws_iam_role.ecs_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
-  
+
 }
 
 resource "aws_ecs_task_definition" "medusa_task" {
@@ -99,7 +99,7 @@ resource "aws_ecs_task_definition" "medusa_task" {
       protocol      = "tcp"
     }]
   }])
-  
+
 }
 
 resource "aws_ecs_service" "medusa_service" {
@@ -118,5 +118,5 @@ resource "aws_ecs_service" "medusa_service" {
   depends_on = [
     aws_iam_role_policy_attachment.ecs_task_execution_policy
   ]
-  
+
 }

@@ -1,7 +1,7 @@
 variable "aws_region" {
   description = "The AWS region to deploy resources in"
   type        = string
-  default     = "us-east-1" 
+  default     = "us-east-1"
 }
 
 variable "vpc_cidr" {
@@ -19,7 +19,7 @@ variable "public_subnet_cidrs" {
 variable "availability_zones" {
   description = "List of availability zones to use for the public subnets"
   type        = list(string)
-  default     = ["us-east-1a", "us-east-1b"]            
+  default     = ["us-east-1a", "us-east-1b"]
 }
 
 variable "ecs_cluster_name" {
@@ -28,7 +28,7 @@ variable "ecs_cluster_name" {
   default     = "medusa-cluster"
 }
 
-variable "ecs_service_name" {   
+variable "ecs_service_name" {
   description = "name of ecs service"
   type        = string
   default     = "medusa-service"
