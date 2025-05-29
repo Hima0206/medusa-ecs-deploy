@@ -65,7 +65,7 @@ jobs:
       working-directory: ./terraform
 
     - name: Debug Terraform plan output
-      run: terraform show -json tfplan
+      run: terraform show -json ./terraform/tfplan
       working-directory: ./terraform
 
     - name: Check tfplan file existence
