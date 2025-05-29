@@ -44,16 +44,18 @@ jobs:
         docker push ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:$IMAGE_TAG
 
     - name: Install Terraform
-      run: |
-        sudo apt-get update -y
-        sudo apt-get install -y wget unzip
-        wget https://releases.hashicorp.com/terraform/1.5.0/terraform_1.5.0_linux_amd64.zip
-        unzip terraform_1.5.0_linux_amd64.zip
-        sudo mv terraform /usr/local/bin/
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.6.6
  
-    - name: Terraform Init & Apply
-      run: |
-        cd terraform
-        terraform init
-        terraform apply -auto-approve -var="ecr_image_uri=${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}"
-        
+    - name: Terraform Init
+      run: terraform init
+      working-directory: ./terraform
+
+    - name: Terraform plan
+      run: terraform plan
+      working-directory: ./terraform
+
+    - name: Terraform Apply
+      run: terraform apply -auto-approve
+      working-directory: ./terraform
