@@ -125,6 +125,62 @@ resource "aws_ecs_service" "medusa_service" {
 
 }
 
+resource "aws_db_instance" "medusa_db" {
+  identifier              = "medusa-db"
+  engine                  = "postgres"
+  instance_class          = "db.t3.micro"
+  allocated_storage       = 20
+  storage_type            = "gp2"
+  username                = var.db_username
+  password                = var.db_password
+  db_name                 = var.db_name
+  vpc_security_group_ids  = [aws_security_group.medusa_sg.id]
+  db_subnet_group_name    = aws_db_subnet_group.medusa_db_subnet_group.name
+  skip_final_snapshot     = true
+  publicly_accessible     = true
+  multi_az                = false
+}
+
+resource "aws_db_subnet_group" "medusa_db_subnet_group" {
+  name       = "medusa-db-subnet-group"
+  subnet_ids = aws_subnet.public_subnets[*].id 
+}
+
+resource "aws_s3_bucket" "medusa_backup_bucket" {
+  bucket = var.s3_bucket_name
+
+  lifecycle {
+    create_before_destroy = true
+    ignore_changes = [bucket]
+  }
+}
+
+resource "aws_elasticache_subnet_group" "medusa_redis_subnet_group" {
+  name       = "medusa-redis-subnet-group"
+  subnet_ids = aws_subnet.public_subnets[*].id
+}
+
+resource "aws_elasticache_cluster" "medusa_redis" {
+  cluster_id           = "medusa-redis"
+  engine               = "redis"
+  node_type            = "cache.t3.micro"
+  num_cache_nodes      = 1
+  parameter_group_name = "default.redis7"
+  subnet_group_name    = aws_elasticache_subnet_group.medusa_redis_subnet_group.name
+  port                 = 6379
+  security_group_ids   = [aws_security_group.medusa_sg.id]
+}
+
+resource "aws_secretsmanager_secret" "medusa_db_password" {
+  name = "medusa-db-password"
+}
+
+resource "aws_secretsmanager_secret_version" "medusa_db_password_version" {
+  secret_id     = aws_secretsmanager_secret.medusa_db_password.id
+  secret_string = var.db_password
+}
+
+
 resource "aws_iam_role" "ecs_task_execution_role" {
   name = "ecsTaskExecutionRole"
 
