@@ -2,19 +2,19 @@ FROM node:18
 
 WORKDIR /app
 
+# Copy everything
 COPY . .
 
-COPY medusa-config.js /app/
+# Make sure medusa-config.js is present AFTER copying all files
+RUN test -f /app/medusa-config.js || (echo "medusa-config.js missing!" && exit 1)
 
-# Debug command to verify file presence
-RUN ls -al /app
+# Install dependencies — prefer local install
+RUN npm install
 
+# OPTIONAL: Install medusa-cli globally (only for CLI access)
 RUN npm install -g medusa-cli
 
-# Ensure medusa-config.js is present in the image
-RUN test -f /app/medusa-config.js || (echo "medusa-config.js missing!" && exit 1)
-# Ensure medusa-config.js is present in the image
-RUN test -f /app/medusa-config.js || (echo "medusa-config.js missing! Please ensure the file is added to the repository." && exit 1)
+# Start via script for safety
+CMD ["npm", "start"]
 
-CMD ["medusa", "start"]
 EXPOSE 9000
