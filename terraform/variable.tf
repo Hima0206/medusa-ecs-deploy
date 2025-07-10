@@ -22,6 +22,7 @@ variable "availability_zones" {
   default     = ["us-east-1a", "us-east-1b"]
 }
 
+
 variable "ecs_cluster_name" {
   description = "Name of the ECS cluster"
   type        = string
@@ -34,17 +35,6 @@ variable "ecs_service_name" {
   default     = "medusa-service"
 }
 
-variable "ecs_task_cpu" {
-  description = "CPU units for the ECS task"
-  type        = string
-  default     = "256"
-}
-
-variable "ecs_task_memory" {
-  description = "Memory in MiB for the ECS task"
-  type        = string
-  default     = "512"
-}
 
 variable "container_name" {
   description = "container name"
@@ -55,7 +45,7 @@ variable "container_name" {
 variable "containerPort" {
   description = "Port on which the container listens"
   type        = number
-  default     = 9000
+  default     = 5000
 }
 
 variable "ecr_image_url" {
@@ -63,6 +53,11 @@ variable "ecr_image_url" {
   type        = string
 }
 
+variable "ecr_repository_name" {
+  description = "Name of the ECR repository"
+  type        = string
+  default     = "medusa-repo"
+}
 
 
 
