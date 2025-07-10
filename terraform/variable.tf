@@ -45,7 +45,7 @@ variable "container_name" {
 variable "containerPort" {
   description = "Port on which the container listens"
   type        = number
-  default     = 9000
+  default     = 5000
 }
 
 variable "ecr_image_url" {
@@ -58,6 +58,56 @@ variable "ecr_repository_name" {
   type        = string
   default     = "medusa-repo"
 }
+
+variable "s3_bucket_name" {
+  description = "S3 bucket name for Medusa file uploads"
+  type        = string
+  default     = "medusa-files"
+}
+
+variable "db_name" {
+  description = "Database name for Medusa"
+  type        = string
+  default     = "medusa_db"
+}
+
+variable "db_username" {
+  description = "Database username for Medusa"
+  type        = string
+  default     = "medusa_user"
+}
+
+variable "db_password" {
+  description = "Database password for Medusa"
+  type        = string
+  default     = "yourStrongPassword123" # Replace with a secure password or use AWS Secrets Manager
+  sensitive   = true
+}
+
+
+variable "db_host" {
+  description = "Database host for Medusa"
+  type        = string
+  default     = "medusa-db.cluster-xxxxxxxxxxxx.us-east-1.rds.amazonaws.com" # Replace with your RDS endpoint
+} 
+
+variable "db_port" {
+  description = "Database port for Medusa"
+  type        = number
+  default     = 5432
+}
+
+variable "use_secrets_manager" {
+  description = "Whether to use AWS Secrets Manager for sensitive data"
+  type        = bool
+  default     = true        
+}
+
+
+
+
+
+
 
 
 
