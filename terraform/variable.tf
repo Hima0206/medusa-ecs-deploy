@@ -45,7 +45,7 @@ variable "container_name" {
 variable "containerPort" {
   description = "Port on which the container listens"
   type        = number
-  default     = 5000
+  default     = 9000
 }
 
 variable "ecr_image_url" {
